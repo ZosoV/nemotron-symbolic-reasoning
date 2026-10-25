@@ -1,0 +1,15 @@
+cot_generator:
+  input_parquet: inputs/data/test_cases.parquet
+  output_parquet: inputs/data/test_cases_cot.parquet
+  # input_parquet: inputs/data/v3/combined_1k.parquet
+  # output_parquet: inputs/data/v3/combined_1k_cot.parquet
+  cot_column: cot_1_5
+  digit_priority_mode: occurrences
+  perturbation_rounds: 3
+  perturbation_cap_mode: static
+  tell_mode: algebraic
+  random_seed: 0
+  limit: null
+  max_cot_tokens: 6500
+  max_order_variants: 1
+  generate_guess_samples: false

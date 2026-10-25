@@ -1,0 +1,128 @@
+{
+  "title": "Saved symbolic-equation model diagnostics",
+  "source_snapshot": "Latest local oscar_analysis checkout inspected on 2026-10-25",
+  "runs": [
+    {
+      "source_file": "inputs/results/val_generations__data-0-examp-mask-analysis-cot.parquet",
+      "source_sha256": "1160b875affee059146a0d3466e260f7bdff1f74c71d83104a27f5d86d4ab2c3",
+      "file_modified_utc": "2026-06-08T01:52:06.129015+00:00",
+      "symbolic_correct": 3,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 0.36452,
+      "symbolic_has_boxed": 479,
+      "symbolic_has_closing_think": 129,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 7,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    },
+    {
+      "source_file": "inputs/results/val_generations__data-0-examp-mask-basic-cot.parquet",
+      "source_sha256": "79c53926a347de5a50fd6055457312b9b158d9f8743e6ee18df70c2dc2b45d1d",
+      "file_modified_utc": "2026-06-08T01:52:07.265015+00:00",
+      "symbolic_correct": 7,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 0.850547,
+      "symbolic_has_boxed": 464,
+      "symbolic_has_closing_think": 265,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 12,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    },
+    {
+      "source_file": "inputs/results/val_generations__data-0-examp-not-mask-basic-cot.parquet",
+      "source_sha256": "6425d8ee88bd8525f20c3ec6cb376df3881a48b81ba83b74fc39163a232e5f40",
+      "file_modified_utc": "2026-06-08T01:52:07.529015+00:00",
+      "symbolic_correct": 3,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 0.36452,
+      "symbolic_has_boxed": 691,
+      "symbolic_has_closing_think": 675,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 3,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    },
+    {
+      "source_file": "inputs/results/val_generations__merged-cot-mask-prefix-initial-polar-400-steps.parquet",
+      "source_sha256": "4ecd0672b244b835151a67edeb4fbb2ea3bc2b29b5e39b6a5c67a8cf1a56111e",
+      "file_modified_utc": "2026-06-13T04:17:09.358530+00:00",
+      "symbolic_correct": 29,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 3.523694,
+      "symbolic_has_boxed": 81,
+      "symbolic_has_closing_think": 81,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 34,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    },
+    {
+      "source_file": "inputs/results/val_generations__merged-cot-mask-prefix-polar-250-steps.parquet",
+      "source_sha256": "f18d8bebafe34e35b1159f7038dbfdaf7810cc1136ad6bc60c6dbc5716b808e4",
+      "file_modified_utc": "2026-06-13T14:35:27.581819+00:00",
+      "symbolic_correct": 1,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 0.121507,
+      "symbolic_has_boxed": 179,
+      "symbolic_has_closing_think": 148,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 6,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    },
+    {
+      "source_file": "inputs/results/val_generations_merged.parquet",
+      "source_sha256": "a114927a9f9e51a9704511b36643ed8f6b3e11c5f5813a5340c19a5d198bc36b",
+      "file_modified_utc": "2026-06-07T01:48:10.259866+00:00",
+      "symbolic_correct": 5,
+      "symbolic_total": 823,
+      "symbolic_accuracy_percent": 0.607533,
+      "symbolic_has_boxed": 619,
+      "symbolic_has_closing_think": 613,
+      "symbolic_public_training_id_overlap": 823,
+      "all_categories_total": 829,
+      "all_categories_correct": 5,
+      "other_category_rows": 6,
+      "experiment_configuration_provenance": "Filename label only; no immutable adapter hash / configuration manifest attached to this result file."
+    }
+  ],
+  "methodology": {
+    "selection": "All six inputs/results/*.parquet files present in the local snapshot.",
+    "filter": "problem_category == 'Cryptarithm (Symbolic Equations)'",
+    "metric": "Mean of stored boolean correct column; count stored has_boxed independently.",
+    "evaluation_code": "notebooks/training_eval/evaluate_lora_adapter.ipynb",
+    "evaluation_configuration_in_current_notebook": {
+      "temperature": 0.0,
+      "max_model_len": 8192,
+      "max_tokens": 7680,
+      "top_p": 1.0
+    },
+    "scoring_in_current_notebook": "Extract boxed answer first, fallback final-answer patterns, numbers or last line; compare to answer using verify (binary strings exact, numeric tolerance, otherwise case-insensitive string match). Symbolic task uses symbolic-string matching.",
+    "overlap_check": "Match symbolic problem_id strings against id column of inputs/data/v2/train.csv.",
+    "timestamps": "Filesystem modification times are provenance hints, not verified training-run dates."
+  },
+  "caveats": [
+    "All 823 symbolic problem IDs in every saved result are in the public competition training CSV. These are local diagnostics, not held-out generalization or leaderboard scores.",
+    "Each result has 829 rows: 823 symbolic puzzles plus only one row from each of six other categories. The 829-row aggregate is not a representative overall score.",
+    "The best saved symbolic diagnostic is 29/823 (3.523694%) in the file labeled 400 steps; the later-modified 250-step file has 1/823 (0.121507%). Neither is a verified final score for the latest generator.",
+    "Result file names identify experiments but are not sufficient to prove the exact training schedule, adapter provenance, or a controlled curriculum comparison.",
+    "All saved model results predate the June 14\u201315 generator-v2 edits. No saved model evaluation of the final v2 generator changes was found.",
+    "Low boxed-answer completion is observed. No finish_reason or exact generated-token-count column was saved, so truncation as the causal explanation is unproven.",
+    "The ~0.86 baseline is reported in project specifications and baseline notebook names; it is not a measured score of the symbolic curriculum experiment or a new independently verified leaderboard result.",
+    "Solver solution coverage uses a different setup from model generation and must not be plotted as a directly comparable LLM accuracy baseline."
+  ],
+  "implementation_status": {
+    "symbolic_solver": "Implemented in src/solver/ and Rust extension.",
+    "synthetic_backward_trajectories": "Implemented in src/cot_generator_v2/.",
+    "curriculum_sft": "Implemented in notebooks/training_eval/end-to-end-curriculum_learning.ipynb; saved current notebook contains no execution outputs.",
+    "generic_grpo": "Implemented in notebooks/training_eval/end-to-end-grpo.ipynb and grpo_training_vllm.py with length-aware answer accuracy + think-format reward.",
+    "trace_specialized_semantic_rewards": "Proposed future work; no implementation found. Existing registry does not parse digit mappings, equation checks, repairs, or factual-observation tags."
+  }
+}

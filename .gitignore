@@ -1,0 +1,26 @@
+# Local credentials and environments
+.env
+.env.*
+!.env.example
+.venv/
+.claude/
+__pycache__/
+*.py[cod]
+# Download competition inputs separately; never commit model weights or raw data.
+inputs/
+data/
+outputs/
+*.parquet
+*.csv
+*.jsonl
+*.safetensors
+*.pt
+*.bin
+*.zip
+# Build artifacts
+node_modules/
+dist/
+target/
+*.so
+.ipynb_checkpoints/
+.DS_Store

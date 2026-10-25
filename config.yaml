@@ -1,0 +1,132 @@
+# Solver configuration
+# All fields are optional — defaults shown below.
+
+# Force base-10 arithmetic only (skips the natural base for puzzles with < 10 symbols).
+force_base_10: true
+
+# Python heuristics to bypass. Choose from:
+#   op_glyph_priority    (heuristic #3 — op ordering by glyph)
+#   sign_pattern_filter  (heuristic #2 — narrow by sign pattern)
+#   concat_optin         (heuristic #4 — structural concat check)
+#   order_ops            (heuristic #5 — MRV op ordering)
+#   tier_skip            (heuristic #9 — skip tiers with empty candidate groups)
+disabled_heuristics: []
+
+# Tiers to search, in order. Earlier tiers are tried first; the solver
+# backtracks to later (wider) tiers only when earlier ones yield no solution.
+# Choices: tier0, tier1, tier2, full
+tiers:
+  # - tier0
+  # - tier1
+  # - tier2
+  - full
+
+# Maximum distinct programs to collect per puzzle. The search escalates in order:
+#   1. distinct digit mappings (standard mode, primary base)
+#   2. little_endian strategy (same base)
+#   3. alternative base (when force_base_10 is false)
+# Finding fewer than max_solutions is fine — the search stops when exhausted.
+max_solutions: 1
+
+# Per-mode cap on the number of digit mappings collected within each search stage.
+# Leftover quota cascades to the next stage.  Null / omit = unlimited.
+# Example: both set to 10 with max_solutions=20 yields ≈10 standard + ≈10 little_endian
+# solutions per puzzle, rebalancing the search_reached distribution.
+max_digit_trials_standard: 1
+max_digit_trials_little_endian: 1
+
+# Randomize the symbol-assignment order and digit-iteration order inside the Rust DFS
+# using a seeded PRNG.  When true, replaces the default weight-priority symbol ordering
+# with a shuffled order, so the k collected mappings span a broader region of the search
+# space.  Off by default (false) to preserve existing deterministic behavior.
+randomize_search: False 
+
+# Randomize the per-operator candidate operation-name lists (normally ordered by
+# op_glyph_priority) before the search for each puzzle.  When true, the first valid
+# operation found is random rather than always the highest-priority one, producing more
+# diverse solutions for ambiguous puzzles.  Independent of randomize_search.
+# Reuses random_seed below for reproducibility.
+randomize_candidates: False
+
+# Base seed for the seeded PRNG used when randomize_search or randomize_candidates is
+# true.  Each puzzle, stage, and operator derives its own seed from this value, so
+# shuffles are independent and fully reproducible across runs.
+random_seed: 0
+
+# Operations to exclude from the arithmetic search candidate lists.
+# Names must match keys in OPERATIONS (src/operations.py). Unknown names are silently ignored.
+# Does not affect the concat fast-path (_try_concat); only the arithmetic search is filtered.
+# Example: exclude concat ops to force arithmetic-only solutions.
+filter_out_operations: #[]
+  # - add_m1
+  # - mul_m1
+  # - mul_p1
+  # - add_p1
+  # - absdiff_p1
+  # - absdiff_m2
+  # - absdiff_m1
+  # - add_p2
+  - a2_plus_b
+
+# Generate a search-trace chain-of-thought and save it in the `search_cot` column.
+# When true, the solver runs the instrumented traced DFS (arithmetic_search_traced)
+# and renders the digit-assignment path + pruning decisions as explanatory prose.
+# Disabled by default (false) — zero overhead when off.
+generate_cot: false
+
+# Write a full branch-by-branch search-trace JSON file for each puzzle (one file per
+# problem_id under search_trace_dir).  Also adds two new columns to the output parquet:
+#   digit_mappings_analyzed  — total (symbol, digit) trials before the first solution
+#   search_trace_path        — path to the JSON file relative to inputs/
+# Disabled by default (false) — zero overhead when off.
+generate_search_trace: false
+
+# Directory to write per-puzzle search-trace JSON files into.
+# Must stay under inputs/ so the Vite dev-server can serve them via /files/<path>.
+search_trace_dir: inputs/data/v2/search_traces_only_cryptharithm_solved/
+
+# Cap on the number of node events recorded per trace file.
+# When the cap is reached truncated=true is set in the JSON; the DFS still runs to
+# the first solution.  0 or null = unlimited.  Useful for large puzzles.
+search_trace_max_nodes: 1000
+
+# Skip the concat fast-path and route every puzzle through the arithmetic search.
+# Concat ops (concat_fwd, concat_rev) remain available as arithmetic candidates
+# unless also listed in filter_out_operations.
+disable_concat_fastpath: false
+
+# Paths are relative to the project root.
+input_parquet: inputs/data/v2/only_cryptharithm.parquet
+output_parquet: inputs/data/v2/only_cryptharithm_solved_k_1.parquet
+
+# ---------------------------------------------------------------------------
+# CoT generator (src/cot_generator/) — 1-5-example chain-of-thought builder.
+# Read by src.cot_generator.config.load_cot_config; independent of the solver
+# config above. Spec: specs/cot-generator.md
+# ---------------------------------------------------------------------------
+cot_generator:
+  # Solver-results .parquet to read feasible rows from, and where to write the
+  # same rows plus the generated CoT column.
+  input_parquet: inputs/data/v2/dataset_v2_combined.parquet
+  output_parquet: inputs/data/v2/dataset_v2_combined_cot.parquet
+  # Name of the generated column.
+  cot_column: cot_1_5
+  # Digit-assignment priority: most_constrained | occurrences | both
+  # ('both' picks one per puzzle with a seeded RNG).
+  digit_priority_mode: occurrences
+  # Number of failed attempts before the solution (chain length = rounds + 1);
+  # capped by how many independent perturbations the puzzle structure allows.
+  perturbation_rounds: 2
+  # Follow-up tells: algebraic (operand-gap + result-position) | simple.
+  tell_mode: algebraic
+  # Base seed for reproducible random choices (priority mode, perturbations).
+  random_seed: 0
+  # Process at most N feasible rows (omit / null = all).
+  limit: null
+  # Cap on cot_approx_tokens. When a rendered CoT exceeds it, the row is
+  # re-rendered with one fewer perturbation and re-checked, repeating until it
+  # fits or no perturbations remain. The realised perturbation count per row is
+  # written to the `cot_num_perturbations` column. (omit / null = no cap).
+  max_cot_tokens: 6500
+
+  generate_guess_samples: false

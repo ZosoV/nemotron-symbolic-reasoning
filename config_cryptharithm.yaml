@@ -1,0 +1,30 @@
+# Solver configuration — only_cryptharithm run
+# Used to verify a2_plus_b is filtered from candidate lists.
+
+force_base_10: true
+disabled_heuristics: []
+
+tiers:
+  - full
+
+max_solutions: 1
+max_digit_trials_standard: 1
+max_digit_trials_little_endian: 1
+
+randomize_search: False
+randomize_candidates: False
+random_seed: 0
+
+filter_out_operations:
+  - a2_plus_b
+
+generate_cot: false
+disable_concat_fastpath: true
+
+# Set to true to generate per-puzzle search-trace JSON files.
+generate_search_trace: false
+search_trace_dir: inputs/data/search_traces
+search_trace_max_nodes: null
+
+input_parquet: inputs/data/v2/only_cryptharithm.parquet
+output_parquet: inputs/data/v2/only_cryptharithm_solved.parquet

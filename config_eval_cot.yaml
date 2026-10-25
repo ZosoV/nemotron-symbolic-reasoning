@@ -1,0 +1,13 @@
+cot_generator:
+  input_parquet: inputs/data/v2/eval_data_k_1.parquet
+  output_parquet: inputs/data/v2/eval_data_k_1_cot.parquet
+  cot_column: cot_1_5
+  digit_priority_mode: occurrences
+  perturbation_rounds: 3
+  perturbation_cap_mode: static      # source has no dataset_category — static required
+  tell_mode: algebraic
+  random_seed: 0
+  limit: null
+  max_cot_tokens: 6500
+  max_order_variants: 3              # Aug 1: variant perturbation orderings
+  generate_guess_samples: true       # Aug 4: diff-guess truncated companions
